@@ -21,16 +21,32 @@
 
 extern NSString const *kCAPackageTypeCAMLBundle;
 
+@interface CCUICAPackageDescription : NSObject
+@property (nonatomic, copy, readonly) NSURL *packageURL;
+@property (assign, nonatomic) BOOL flipsForRightToLeftLayoutDirection;
++ (instancetype)descriptionForPackageNamed:(NSString *)name inBundle:(NSBundle *)bundle;
+- (BOOL)flipsForRightToLeftLayoutDirection;
+- (CCUICAPackageDescription *)initWithPackageName:(NSString *)name inBundle:(NSBundle *)bundle;
+- (void)setFlipsForRightToLeftLayoutDirection:(BOOL)flips;
+- (NSURL *)packageURL;
+@end
+
 @interface CCUICAPackageView : UIView
-@property (nonatomic, retain) CAPackage *package;
+
+@property (nonatomic, retain) CAPackage* package;
 // @property(nonatomic, retain) CALayer* packageLayer;
 // @property(nonatomic) double* scale;
+@property (nonatomic, retain) CCUICAPackageDescription* packageDescription;
+
 @end
 
 @interface CCUIButtonModuleView : UIControl
+
 -(BOOL)isSelected;
-@property(nonatomic, retain) CCUICAPackageView* packageView;
+@property(nonatomic, retain) CCUICAPackageDescription* glyphPackageDescription;
 @property (retain, nonatomic) NSString* glyphState;
+-(void)setGlyphPackageDescription;
+
 @end
 
 // @interface NSObject (Private)
