@@ -11,87 +11,18 @@ static NSString * nsDomainString = @"com.tareq.betterccbattery";
 static NSString * nsNotificationString = @"com.tareq.betterccbattery/preferences.changed";
 static BOOL enabled;
 
-%hook CALayer
-
--(void)layoutSublayers {
-
-  %orig;
-
-	if ([self.superlayer.superlayer.superlayer.superlayer.delegate isKindOfClass:NSClassFromString(@"CCUILowPowerModule")]) {
-
-		UIAlertController* alert = [UIAlertController alertControllerWithTitle: @"CCUILPM Found"
-															 message: @"happy"
-															 preferredStyle:UIAlertControllerStyleAlert];
-
-		UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
-			 handler:^(UIAlertAction * action) {}];
-
-		[alert addAction:defaultAction];
-		[[[UIApplication sharedApplication] keyWindow].rootViewController presentViewController:alert animated:YES completion:nil];
-
-	}
-
-	if ([self.name isEqual: @"yellow long guy that gets short"]) {
-
-		UIAlertController* alert = [UIAlertController alertControllerWithTitle: [NSString stringWithFormat:@"%@",self.superlayer.superlayer.superlayer.superlayer.superlayer.name]
-															 message: [NSString stringWithFormat:@"%@",[self.superlayer.superlayer.superlayer.superlayer delegate]]
-															 //[self.module.glyphPackageView.packageDescription.packageURL absoluteString]
-															 preferredStyle:UIAlertControllerStyleAlert];
-
-		UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
-			 handler:^(UIAlertAction * action) {}];
-
-		[alert addAction:defaultAction];
-		[[[UIApplication sharedApplication] keyWindow].rootViewController presentViewController:alert animated:YES completion:nil];
-
-		self.backgroundColor = [[UIColor batteryRed]  CGColor];
-
-	}
-
-	else if ([self.name isEqual: @"white short guy that gets long"]) {
-
-		self.backgroundColor = [[UIColor greenColor]  CGColor];
-
-	}
-
-	// Those two will be unused for now
-
-	// else if ([self.name isEqual: @"well"]) {
-	//
-	// 	self.backgroundColor = [[UIColor greenColor]  CGColor];
-	//
-	// }
-
-	// else if ([self.name isEqual: @"tip"]) {
-	//
-	// 	self.backgroundColor = [[UIColor blueColor]  CGColor];
-	//
-	// }
-
-}
-
-%end
-
 %hook CCUIToggleViewController
-
-// static NSString* colorToString(UIColor* color) {
-//     CGFloat red, green, blue, alpha;
-//     [color getRed:&red green:&green blue:&blue alpha:&alpha];
-//     return [NSString stringWithFormat:@"%02x%02x%02x", (int)(red * 255), (int)(green * 255) , (int)(blue * 255)];
-// }
 
 %property (retain, nonatomic) UILabel* percentLabel;
 %property (retain, nonatomic) CALayer* longBatteryBar;
 %property (retain, nonatomic) CALayer* shortBatteryBar;
+%property (retain, nonatomic) CALayer* tipBatteryBar;
 
 -(void)viewDidLoad {
 
   %orig;
 
   if ([self.module isKindOfClass:NSClassFromString(@"CCUILowPowerModule")]) {
-		// self.glyphImageView.backgroundColor = [UIColor purpleColor];
-
-		// self.selectedGlyphColor = [UIColor purpleColor];
 
 		CALayer* LPM_replaykit = self.view.layer.sublayers[0].sublayers[1].sublayers[0].sublayers[0];
 
@@ -101,19 +32,13 @@ static BOOL enabled;
 
 				self.longBatteryBar = layerItem;
 
-				UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"happy"
-																	 message: @"boi"
-																	 preferredStyle:UIAlertControllerStyleAlert];
-
-				UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
-					 handler:^(UIAlertAction * action) {}];
-
-				[alert addAction:defaultAction];
-				[[[UIApplication sharedApplication] keyWindow].rootViewController presentViewController:alert animated:YES completion:nil];
-
 			} else if ([layerItem.name isEqual: @"white short guy that gets long"]) {
 
 				self.shortBatteryBar = layerItem;
+
+			} else if ([layerItem.name isEqual: @"tip"]) {
+
+				self.tipBatteryBar = layerItem;
 
 			}
 
@@ -130,28 +55,7 @@ static BOOL enabled;
 	  self.percentLabel.font = [self.percentLabel.font fontWithSize:10];
 	  [self.view addSubview:self.percentLabel];
 
-		// [self.module setGlyphPackageDescription: [CCUICAPackageDescription descriptionForPackageNamed:@"Mute" inBundle:[NSBundle bundleWithURL: [NSURL URLWithString: @"/System/Library/ControlCenter/Bundles/MuteModule.bundle"]]]];
-
-		// UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"self.module.glyphPackageView.packageLayer.contentsFormat"
-		// 													 message: [NSString stringWithFormat:@"%@",self.module.glyphPackageDescription.packageURL]
-		// 													 //[self.module.glyphPackageView.packageDescription.packageURL absoluteString]
-		// 													 preferredStyle:UIAlertControllerStyleAlert];
-		//
-		// UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
-		// 	 handler:^(UIAlertAction * action) {}];
-		//
-		// [alert addAction:defaultAction];
-		// [[[UIApplication sharedApplication] keyWindow].rootViewController presentViewController:alert animated:YES completion:nil];
-
-		// self.module.glyphPackageView.package = [CAPackage packageWithContentsOfURL:[NSURL fileURLWithPath:@"/System/Library/ControlCenter/Bundles/MuteModule.bundle/Mute.ca"] type:kCAPackageTypeCAMLBundle options:nil error:nil];
-
-  } else {
-
-		// self.selectedGlyphColor = [UIColor greenColor];
-
-	}
-
-
+  }
 
 }
 
@@ -163,6 +67,12 @@ static BOOL enabled;
 
   [self.percentLabel sizeToFit];
   self.percentLabel.frame = CGRectMake(self.view.frame.size.width/2 - self.percentLabel.frame.size.width/2, self.view.frame.size.height * 0.70, self.percentLabel.frame.size.width, self.percentLabel.frame.size.height);
+
+
+	self.longBatteryBar.backgroundColor  = [[UIColor redColor]    CGColor];
+	self.shortBatteryBar.backgroundColor = [[UIColor greenColor]  CGColor];
+	self.tipBatteryBar.backgroundColor   = [[UIColor blueColor]   CGColor];
+
 }
 -(void)refreshState {
   %orig;
