@@ -9,6 +9,15 @@
 // @end
 //
 
+// @interface CALayer : NSObject
+
+// @property(nonatomic, retain) NSString * name;
+
+// @end
+
+@interface CALayerDelegate : NSObject
+@end
+
 @interface CAPackage : NSObject
 
 @property (readonly) CALayer *rootLayer;
@@ -45,6 +54,7 @@ extern NSString const *kCAPackageTypeCAMLBundle;
 -(BOOL)isSelected;
 @property(nonatomic, retain) CCUICAPackageDescription* glyphPackageDescription;
 @property (retain, nonatomic) NSString* glyphState;
+@property (retain, nonatomic) CALayer* layer;
 -(void)setGlyphPackageDescription;
 
 @end
@@ -55,16 +65,18 @@ extern NSString const *kCAPackageTypeCAMLBundle;
 
 @interface CCUIToggleViewController : UIViewController
 
-// @property(nonatomic, retain)UIView* highlightedBackgroundView;
-
-@property (retain, nonatomic) UILabel *percentLabel;
-
-// @property (retain, nonatomic) UIColor* selectedGlyphColor;
-@property (retain, nonatomic) NSString* glyphState;
-// @property (retain, nonatomic) CCUIButtonModuleView*
-// selectedColor
 @property (retain, nonatomic) CCUIButtonModuleView* module;
 
-// - (id)_viewControllerForAncestor;
+@property (retain, nonatomic) NSString* glyphState;
+
+@property (retain, nonatomic) UILabel* percentLabel;
+
+// internally <CALayer name="yellow long guy that gets short" .../>
+@property (retain, nonatomic) CALayer* longBatteryBar;
+
+// internally <CALayer name="white short guy that gets long" .../>
+@property (retain, nonatomic) CALayer* shortBatteryBar;
+
+// additional CALayers inside the battery are: "well", "tip"
 
 @end
