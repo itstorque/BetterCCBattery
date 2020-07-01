@@ -14,4 +14,8 @@
         		               alpha: 1.0f];
 }
 
++ (UIColor *) batteryGreen {
+    return [UIColor greenColor];
+}
+
 @end

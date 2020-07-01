@@ -26,6 +26,13 @@ static BOOL enabled;
 
 		CALayer* LPM_replaykit = self.view.layer.sublayers[0].sublayers[1].sublayers[0].sublayers[0];
 
+    CATransform3D transform = CATransform3DTranslate(
+        CATransform3DMakeScale(1.2, 1.2, 1),
+        0, 5, 0
+    );
+
+    LPM_replaykit.sublayerTransform = transform;
+
 		for (CALayer* layerItem in LPM_replaykit.sublayers) {
 
 			if ([layerItem.name isEqual: @"yellow long guy that gets short"]) {
@@ -47,16 +54,21 @@ static BOOL enabled;
 		self.percentLabel = [[UILabel alloc] init];
 
 		if([self.module isSelected]){
-			self.percentLabel.textColor = [UIColor batteryYellow];
+			self.percentLabel.textColor = [UIColor blackColor];
 	  } else {
 			self.percentLabel.textColor = [UIColor whiteColor];
 	  }
 
-	  self.percentLabel.font = [self.percentLabel.font fontWithSize:10];
+    [self.percentLabel setFont:[UIFont boldSystemFontOfSize:13]];
 	  [self.view addSubview:self.percentLabel];
 
   }
 
+}
+
+-(void)touchesEnded:(id)arg1 forEvent:(id)arg2 {
+  %orig;
+  [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"prefs:root=BATTERY_USAGE"]];
 }
 
 -(void)viewWillAppear:(BOOL)arg1 {
@@ -66,21 +78,62 @@ static BOOL enabled;
   self.percentLabel.text = [NSString stringWithFormat:@"%i%%", battery];
 
   [self.percentLabel sizeToFit];
-  self.percentLabel.frame = CGRectMake(self.view.frame.size.width/2 - self.percentLabel.frame.size.width/2, self.view.frame.size.height * 0.70, self.percentLabel.frame.size.width, self.percentLabel.frame.size.height);
+  self.percentLabel.frame = CGRectMake(self.view.frame.size.width/2 - self.percentLabel.frame.size.width/2, self.view.frame.size.height * 0.65, self.percentLabel.frame.size.width, self.percentLabel.frame.size.height);
 
+  [[UIDevice currentDevice] setBatteryMonitoringEnabled:YES];
+  [[NSNotificationCenter defaultCenter] addObserverForName:UIDeviceBatteryStateDidChangeNotification object:nil queue:
+    [NSOperationQueue mainQueue] usingBlock:^(NSNotification *note) {
 
-	self.longBatteryBar.backgroundColor  = [[UIColor redColor]    CGColor];
-	self.shortBatteryBar.backgroundColor = [[UIColor greenColor]  CGColor];
-	self.tipBatteryBar.backgroundColor   = [[UIColor blueColor]   CGColor];
+      [self refreshIcon];
+
+  }];
+
+  [self refreshIcon];
 
 }
+
 -(void)refreshState {
+
   %orig;
-  if([self.module isSelected]){
-		self.percentLabel.textColor = [UIColor batteryYellow];
+
+  [self refreshIcon];
+
+}
+
+%new
+-(void)refreshIcon {
+
+  [[UIDevice currentDevice] setBatteryMonitoringEnabled:YES];
+
+  // [[UIDevice currentDevice] batteryState] != UIDeviceBatteryStateUnplugged
+  // [[UIDevice currentDevice] batteryState] == UIDeviceBatteryStateCharging
+
+  if ([[UIDevice currentDevice] batteryState] == UIDeviceBatteryStateCharging) {
+
+    self.longBatteryBar.backgroundColor  = [[UIColor batteryGreen] CGColor];
+    self.shortBatteryBar.backgroundColor = [[UIColor batteryGreen] CGColor];
+    self.tipBatteryBar.backgroundColor   = [[UIColor batteryGreen] CGColor];
+
+  } else if ([self.module isSelected]) {
+
+    self.longBatteryBar.backgroundColor  = [[UIColor batteryYellow] CGColor];
+    self.shortBatteryBar.backgroundColor = [[UIColor batteryYellow] CGColor];
+    self.tipBatteryBar.backgroundColor   = [[UIColor batteryYellow] CGColor];
+
   } else {
-		self.percentLabel.textColor = [UIColor whiteColor];
+
+    self.longBatteryBar.backgroundColor  = [[UIColor batteryRed]    CGColor];
+    self.shortBatteryBar.backgroundColor = [[UIColor batteryRed]    CGColor];
+    self.tipBatteryBar.backgroundColor   = [[UIColor batteryRed]    CGColor];
+
   }
+
+  if ([self.module isSelected]) {
+    self.percentLabel.textColor = [UIColor batteryYellow];
+  } else {
+    self.percentLabel.textColor = [UIColor whiteColor];
+  }
+
 }
 
 %end

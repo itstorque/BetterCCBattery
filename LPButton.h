@@ -13,8 +13,11 @@
 
 @property (retain, nonatomic) CCUIButtonModuleView* module;
 @property (retain, nonatomic) NSString* glyphState;
+-(void)touchesEnded:(id)arg1 forEvent:(id)arg2;
 
 // Created Properties
+
+-(void)refreshIcon;
 
 @property (retain, nonatomic) UILabel* percentLabel;
 
