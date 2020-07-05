@@ -45,10 +45,26 @@
 // @end
 
 @interface CAState : NSObject
--(NSArray *)elements;
+-(NSArray*)elements;
+@property(copy, nonatomic) NSString *name;
+-(void)removeElement:(id)arg1;
+@property(getter=isInitial) _Bool initial;
 @end
 
 // @interface CAStateSetValue : NSObject
 // -(void)setValue:(CGRect)arg1 ;
 // -(CGRect)value;
 // @end
+
+@interface CAPackage : NSObject
+
++(id)packageWithContentsOfURL:(id)arg1 type:(id)arg2 options:(id)arg3 error:(id)arg4;
+
+@end
+
+@interface CCUICAPackageView : UIView
+
+@property (nonatomic, retain) CAPackage *package;
+-(void)setStateName:(id)arg1;
+
+@end

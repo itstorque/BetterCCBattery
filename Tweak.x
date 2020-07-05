@@ -121,6 +121,7 @@ static BOOL enabled;
 -(void)refreshIcon {
 
 	double batteryPercentage =  [self.percentLabel.text doubleValue]/100;
+	double maxLength = 26.335199356079;//self.longBatteryBar.bounds.size.width;
 
 	[[UIDevice currentDevice] setBatteryMonitoringEnabled:YES];
 
@@ -159,31 +160,84 @@ static BOOL enabled;
 		battery glyph has two states: * and enabled
 		longBatteryBar  animates 	*: maxLength, 			enabled: batteryPercentage
 		shortBatteryBar animates 	*: batteryPercentage, 	enabled: maxLength
+
+		We will add a new state disabled that will overwrite the actions in state *
 	*/
 
-	double maxLength = self.longBatteryBar.bounds.size.width;
-
-	// Set the width at state * of shortBatteryBar
-	// [self setLayerWidth:self.shortBatteryBar width: maxLength*batteryPercentage];
-	self.shortBatteryBar.bounds = [self changeWidthOf:self.shortBatteryBar.bounds
-		to:maxLength*batteryPercentage];
-
-	// Set the width at state enabled of longBatteryBar
 	if (self.batteryLayer.states) {
 
-		// [[self.batteryLayer.states.elements objectAtIndex:10] CAState].value = [[self.batteryLayer.states.elements objectAtIndex:10] CAState].value
-		// 	to:maxLength*batteryPercentage];
-
 		CAState* enabledState = self.batteryLayer.states[0];
-		CAStateSetValue* valueOfStateLongBatteryBar = [enabledState.elements objectAtIndex:10];
 
-		// [widthStateLongBatteryBar setValue: maxLength*batteryPercentage];
+		// if ([self.batteryLayer.states count] <= 1) {
 
-		CGRect rect = self.shortBatteryBar.bounds;//CGRectMake(0, 0, 12.162, 10.103);
+			// CAState* disabledState = [[CAState alloc] init];
+			//
+			// disabledState.name = @"disabled";
+			// disabledState.initial = YES;
+
+			// [disabledState removeElement: [disabledState.elements objectAtIndex:9]];
+			// [disabledState removeElement: [disabledState.elements objectAtIndex:8]];
+			// [disabledState removeElement: [disabledState.elements objectAtIndex:7]];
+			// [disabledState removeElement: [disabledState.elements objectAtIndex:5]];
+			// [disabledState removeElement: [disabledState.elements objectAtIndex:4]];
+			// [disabledState removeElement: [disabledState.elements objectAtIndex:3]];
+			// [disabledState removeElement: [disabledState.elements objectAtIndex:2]];
+			// [disabledState removeElement: [disabledState.elements objectAtIndex:1]];
+			// [disabledState removeElement: [disabledState.elements objectAtIndex:0]];
+
+			// CAStateSetValue* disabledValueOfStateShortBatteryBar = [disabledState.elements objectAtIndex:0];
+			// CAStateSetValue* disabledValueOfStateLongBatteryBar  = [disabledState.elements objectAtIndex:1];
+			//
+			// [disabledValueOfStateShortBatteryBar setValue: [NSValue valueWithCGRect:
+			// 	CGRectMake(0, 0, 26.335235595703, 10.103469848633)
+			// ]];
+			//
+			// [disabledValueOfStateLongBatteryBar setValue: [NSValue valueWithCGRect:
+			// 	CGRectMake(0, 0, 4.335235595703, 10.103469848633)
+			// ]];
+
+			// NSMutableArray *disabledElements = [NSMutableArray array];
+			// [disabledElements addObject: [enabledState.elements objectAtIndex:6]];
+			//
+			// CAStateSetValue* disabledElementsSetValue = [[CAStateSetValue alloc] init];
+			// disabledElementsSetValue.
+
+			// disabledElements[0].bounds = disabledElementsSetValue;
+			//
+			// disabledState.elements = disabledElements;
+
+			// [self.batteryLayer insertState: disabledState atIndex: 1];
+
+		// }
+
+		CAStateSetValue* valueOfStateShortBatteryBar = [enabledState.elements objectAtIndex:6];
+		CAStateSetValue* valueOfStateLongBatteryBar  = [enabledState.elements objectAtIndex:10];
+
+		CGRect rect = CGRectMake(0, 0, maxLength*batteryPercentage, 10.103469848633);//[self changeWidthOf:self.shortBatteryBar.bounds
+			// to:maxLength*batteryPercentage];//self.shortBatteryBar.bounds;
 
 		[valueOfStateLongBatteryBar setValue: [NSValue valueWithCGRect:rect]];
 
+		[valueOfStateShortBatteryBar setValue: [NSValue valueWithCGRect:
+			CGRectMake(0, 0, maxLength*batteryPercentage, 10.103469848633)
+		]];
+
 	}
+
+
+	//Position overwrites
+	self.shortBatteryBar.anchorPoint = CGPointMake(0, 0.5);
+	self.longBatteryBar.anchorPoint = CGPointMake(0, 0.5);
+
+	CGPoint pos = self.longBatteryBar.position;
+	pos.x = 9.994;
+
+	self.shortBatteryBar.position = pos;
+	self.longBatteryBar.position = pos;
+
+	// // Set the width at state * of shortBatteryBar
+	self.shortBatteryBar.bounds = CGRectMake(0, 0, maxLength*batteryPercentage, 10.103469848633);
+	self.longBatteryBar.bounds = CGRectMake(0, 0, maxLength*batteryPercentage, 10.103469848633);
 
 }
 

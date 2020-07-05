@@ -21,6 +21,7 @@ In the block for the `CALayer` interface, add in the following lines:
 /** ADDED BY TAREQ FOR SUPPORT OF STATE CONTROL **/
 @property(copy) NSArray *stateTransitions; //@dynamic stateTransitions;
 @property(copy) NSArray *states; //@dynamic states;
+-(void)insertState:(id)arg1 atIndex:(unsigned int)arg2;
 ```
 
 At the end of the file, also add the following code to allow interfacing with `CAStateElement` and `CAStateSetValue`

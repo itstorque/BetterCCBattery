@@ -54,6 +54,7 @@ CA_CLASS_AVAILABLE (10.5, 2.0, 9.0, 2.0)
 /** ADDED BY TAREQ FOR SUPPORT OF STATE CONTROL **/
 @property(copy) NSArray *stateTransitions; //@dynamic stateTransitions;
 @property(copy) NSArray *states; //@dynamic states;
+-(void)insertState:(id)arg1 atIndex:(unsigned int)arg2;
 
 /** Layer creation and initialization. **/
 
